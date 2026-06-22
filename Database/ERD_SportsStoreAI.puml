@@ -1,0 +1,190 @@
+@startuml
+hide circle
+skinparam linetype ortho
+skinparam entity {
+  BackgroundColor White
+  BorderColor Black
+}
+
+entity Users {
+  * Id : int <<PK>>
+  --
+  FullName : nvarchar(120)
+  Email : nvarchar(256)
+  Status : nvarchar(20)
+}
+
+entity Roles {
+  * Id : int <<PK>>
+  --
+  Name : nvarchar(256)
+}
+
+entity UserRoles {
+  * UserId : int <<PK, FK>>
+  * RoleId : int <<PK, FK>>
+}
+
+entity UserAddresses {
+  * Id : int <<PK>>
+  --
+  UserId : int <<FK>>
+  ReceiverName : nvarchar(120)
+  ReceiverPhone : nvarchar(20)
+  AddressLine : nvarchar(300)
+}
+
+entity Categories {
+  * Id : int <<PK>>
+  --
+  Name : nvarchar(120)
+  IsActive : bit
+}
+
+entity Brands {
+  * Id : int <<PK>>
+  --
+  Name : nvarchar(100)
+  IsActive : bit
+}
+
+entity Products {
+  * Id : int <<PK>>
+  --
+  CategoryId : int <<FK>>
+  BrandId : int <<FK>>
+  Name : nvarchar(180)
+  Slug : nvarchar(220)
+  ProductType : nvarchar(30)
+  BasePrice : decimal
+  IsActive : bit
+}
+
+entity ProductImages {
+  * Id : int <<PK>>
+  --
+  ProductId : int <<FK>>
+  Url : nvarchar(500)
+  IsPrimary : bit
+}
+
+entity ProductVariants {
+  * Id : int <<PK>>
+  --
+  ProductId : int <<FK>>
+  SKU : nvarchar(60)
+  Size : nvarchar(30)
+  Color : nvarchar(50)
+  Price : decimal
+  StockQuantity : int
+}
+
+entity Carts {
+  * Id : int <<PK>>
+  --
+  UserId : int <<FK>>
+}
+
+entity CartItems {
+  * Id : int <<PK>>
+  --
+  CartId : int <<FK>>
+  ProductVariantId : int <<FK>>
+  Quantity : int
+  IsSelected : bit
+}
+
+entity Orders {
+  * Id : bigint <<PK>>
+  --
+  UserId : int <<FK>>
+  OrderCode : nvarchar(30)
+  TotalAmount : decimal
+  Status : nvarchar(30)
+}
+
+entity OrderItems {
+  * Id : bigint <<PK>>
+  --
+  OrderId : bigint <<FK>>
+  ProductVariantId : int <<FK>>
+  ProductName : nvarchar(180)
+  SKU : nvarchar(60)
+  UnitPrice : decimal
+  Quantity : int
+}
+
+entity Payments {
+  * Id : bigint <<PK>>
+  --
+  OrderId : bigint <<FK>>
+  Method : nvarchar(30)
+  Status : nvarchar(20)
+  Amount : decimal
+}
+
+entity OrderStatusHistories {
+  * Id : bigint <<PK>>
+  --
+  OrderId : bigint <<FK>>
+  ChangedByUserId : int <<FK>>
+  Status : nvarchar(30)
+  ChangedAt : datetime2
+}
+
+entity ProductViewHistories {
+  * Id : bigint <<PK>>
+  --
+  UserId : int <<FK>>
+  ProductId : int <<FK>>
+  SessionId : nvarchar(100)
+  ViewedAt : datetime2
+}
+
+entity SizeCharts {
+  * Id : int <<PK>>
+  --
+  BrandId : int <<FK>>
+  ProductType : nvarchar(30)
+  SizeLabel : nvarchar(30)
+}
+
+entity RecommendationLogs {
+  * Id : bigint <<PK>>
+  --
+  UserId : int <<FK>>
+  SourceProductId : int <<FK>>
+  RecommendedProductId : int <<FK>>
+  RecommendationType : nvarchar(30)
+  RecommendedSize : nvarchar(30)
+  Score : decimal
+}
+
+Users ||--o{ UserRoles
+Roles ||--o{ UserRoles
+Users ||--o{ UserAddresses
+
+Categories ||--o{ Products
+Brands |o--o{ Products
+Products ||--o{ ProductImages
+Products ||--o{ ProductVariants
+
+Users ||--|| Carts
+Carts ||--o{ CartItems
+ProductVariants ||--o{ CartItems
+
+Users ||--o{ Orders
+Orders ||--|{ OrderItems
+ProductVariants ||--o{ OrderItems
+Orders ||--o{ Payments
+Orders ||--o{ OrderStatusHistories
+Users |o--o{ OrderStatusHistories
+
+Users |o--o{ ProductViewHistories
+Products ||--o{ ProductViewHistories
+Brands |o--o{ SizeCharts
+
+Users |o--o{ RecommendationLogs
+Products |o--o{ RecommendationLogs : source
+Products |o--o{ RecommendationLogs : recommended
+@enduml
