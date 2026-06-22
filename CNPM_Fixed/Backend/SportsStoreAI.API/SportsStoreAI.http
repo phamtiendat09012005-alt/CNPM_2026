@@ -1,0 +1,42 @@
+@host = https://localhost:7188
+@token = PASTE_JWT_HERE
+
+### Health
+GET {{host}}/health
+
+### Register
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Khách hàng Demo",
+  "email": "customer@example.com",
+  "phoneNumber": "0900000000",
+  "password": "Customer@123"
+}
+
+### Login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@sportsstoreai.local",
+  "password": "Admin@123456"
+}
+
+### Products
+GET {{host}}/api/products?page=1&pageSize=12
+
+### Cart
+GET {{host}}/api/cart
+Authorization: Bearer {{token}}
+
+### Add cart item
+POST {{host}}/api/cart/items
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "productVariantId": 1,
+  "quantity": 1
+}
