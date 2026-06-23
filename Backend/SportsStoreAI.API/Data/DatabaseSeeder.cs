@@ -61,6 +61,36 @@ public sealed class DatabaseSeeder
             await _userManager.AddToRoleAsync(admin, "Admin");
         }
 
+        var seedUsers = new[]
+        {
+            new { FullName = "Phạm Tiến Đạt", Email = "tiendat.2380600460@sportsstoreai.local", Password = "User@2380600460" },
+            new { FullName = "Lê Trần Quốc Thịnh", Email = "quocthinh.2380602127@sportsstoreai.local", Password = "User@2380602127" },
+            new { FullName = "Hồ Ngọc Huy", Email = "ngochuy.2380600809@sportsstoreai.local", Password = "User@2380600809" },
+            new { FullName = "Nguyễn Minh Thuận", Email = "minhthuan.2380602165@sportsstoreai.local", Password = "User@2380602165" }
+        };
+
+        foreach (var u in seedUsers)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(u.Email);
+            if (existingUser is null)
+            {
+                var newUser = new ApplicationUser
+                {
+                    UserName = u.Email,
+                    Email = u.Email,
+                    FullName = u.FullName,
+                    EmailConfirmed = true,
+                    Status = "Active"
+                };
+
+                var result = await _userManager.CreateAsync(newUser, u.Password);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(newUser, "Customer");
+                }
+            }
+        }
+
         if (!await _db.Categories.AnyAsync())
         {
             _db.Categories.AddRange(

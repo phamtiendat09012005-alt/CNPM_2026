@@ -55,7 +55,7 @@ export default function Login() {
           {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </button>
         <div className="auth-footer">Chưa có tài khoản? <Link to="/register">Đăng ký</Link></div>
-        <div className="demo-note">Admin demo: admin@sportsstoreai.local / Admin@123456</div>
+        
       </form>
     </div>
   );
